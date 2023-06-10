@@ -1,0 +1,15 @@
+{
+    "type": "module",
+    "name": "proxy_test",
+    "version": "1.0.0",
+    "description": "",
+    "main": "proxies.js",
+    "scripts": {
+        "run-test": "node src/test.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "https-proxy-agent": "^7.0.0"
+    }
+}

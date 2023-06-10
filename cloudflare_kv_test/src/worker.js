@@ -3,7 +3,7 @@ import { Hono } from "hono"
 const app = new Hono()
 
 async function writeRequest(c) {
-  const data = await c.req.body()
+  const data = await c.req.text()
   const id = crypto.randomUUID()
   const ip = c.req.header("CF-Connecting-IP") || c.req.header("X-Forwarded-For")
 
@@ -30,8 +30,14 @@ async function readRequest(c) {
   const end = Date.now()
   console.log(`[Client: ${ip}] Read (ID: ${id}) took ${end - start}ms`)
 
+  if (data === null) {
+    return c.json({error: "Not found"}, 404)
+  }
+
   return c.json({data : data})
 }
 
 app.post("/write", writeRequest)
 app.get("/read/:id", readRequest)
+
+export default app
