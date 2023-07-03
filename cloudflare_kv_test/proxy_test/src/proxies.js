@@ -2,12 +2,12 @@ export default [
   {
     ip: "161.0.70.36",
     port: "5625",
-    city: "Ashburn"
+    city: "New York"
   },
   {
     ip: "157.52.174.116",
     port: "6325",
-    city: "Los Angeles"
+    city: "Decatur"
   },
   {
     ip: "104.143.224.57",
@@ -27,12 +27,12 @@ export default [
   {
     ip: "104.239.43.163",
     port: "5891",
-    city: "Toronto"
+    city: "Paris"
   },
   {
     ip: "64.137.60.120",
     port: "5184",
-    city: "Paris"
+    city: "Toronto"
   },
   {
     ip: "23.129.253.129",
@@ -57,7 +57,7 @@ export default [
   {
     ip: "64.137.90.208",
     port: "5828",
-    city: "Chiyoda"
+    city: "Tokyo"
   },
   {
     ip: "103.75.228.210",
@@ -77,7 +77,7 @@ export default [
   {
     ip: "103.101.88.112",
     port: "5836",
-    city: "Helsinki"
+    city: "Kuala Lumpur"
   },
   {
     ip: "43.229.9.50",
@@ -100,3 +100,4 @@ export default [
     city: "Kuala Lumpur"
   }
 ];
+
