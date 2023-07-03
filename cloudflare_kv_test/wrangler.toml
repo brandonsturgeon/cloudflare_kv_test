@@ -13,9 +13,9 @@ id = "97fa9387a77a491a9a21e8a5bd1dd761"
 # class_name = "MyDurableObject"
 
 # # R2 Bucket binding - For more information: https://developers.cloudflare.com/r2/api/workers/workers-api-reference/#create-a-binding
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+[[r2_buckets]]
+binding = "BucketStore"
+bucket_name = "cloudflare-kv-test"
 
 # # Service binding - For more information: https://developers.cloudflare.com/workers/platform/services
 # [[routes]]

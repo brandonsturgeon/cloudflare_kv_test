@@ -22,32 +22,28 @@ async function writeData() {
   return json.id;
 }
 
-async function readData(proxy, id, agent, firstFailed, attempts) {
+async function readData(proxy, id, agent, started, attempts) {
+  attempts = attempts || 0;
   agent = agent || new HttpsProxyAgent(`http://${proxy.ip}:${proxy.port}`);
+
+  started = started || Date.now();
 
   https.get(url + `/read/${id}`, { agent }, (res) => {
     const status = res.statusCode;
 
+    const loc = `${proxy.region + "-" || ""}${proxy.colo}#${proxy.coloID} - ${proxy.ip}`;
     if (status === 404) {
-      firstFailed = firstFailed || Date.now();
-      attempts = attempts || 0;
-
-      readData(proxy, id, agent, firstFailed, attempts + 1);
+      readData(proxy, id, agent, started, attempts + 1);
     } else {
-      const loc = `${proxy.region + "-" || ""}${proxy.colo}`;
-      if (firstFailed) {
-        const time = Date.now() - firstFailed;
-        console.log(`${loc} - ${proxy.ip} - Success - (Took: ${time}ms | ${attempts} retries)`);
-      } else {
-        console.log(`${loc} - ${proxy.ip} - Success`);
-      }
+      const time = Date.now() - started;
+      console.log(`${loc} - 200 - (Took: ${time}ms | ${attempts} retries)`);
     }
   });
 }
 
 (async () => {
+  console.log("Setting location data for all proxies");
   await Promise.all(proxies.map(proxy => setLocationData(proxy, url)));
-  console.log("Set location data for all proxies");
 
   // Write the data
   const id = await writeData();

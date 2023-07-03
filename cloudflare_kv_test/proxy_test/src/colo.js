@@ -10,6 +10,7 @@ export default async function setLocationData(proxy, url) {
       res.on('data', (chunk) => { rawData += chunk; });
       res.on('end', () => {
         const data = JSON.parse(rawData);
+        proxy.coloID = data.coloID;
         proxy.colo = data.colo;
         proxy.region = data.country;
         resolve();
