@@ -9,31 +9,23 @@ async function writeRequest(c) {
 
   const start = Date.now()
 
-	try {
-		await Promise.all([
-			c.env.DataStore.put(`data:${id}`, data, {
-				type: "arrayBuffer",
-				expirationTtl: 60,
-				metadata: {
-					remote: ip
-				}
-			}),
-			c.env.DataStore.put(`size:${id}`, data.byteLength.toString(), {
-				expirationTtl: 60,
-				metadata: {
-					remote: ip
-				}
-			})
-		])
+  try {
+    await c.env.DataStore.put(`data:${id}`, data, {
+      type: "arrayBuffer",
+      expirationTtl: 60,
+      metadata: {
+        remote: ip
+      }
+    })
 
-		const end = Date.now()
-		console.log(`[Client: ${ip}] Write took ${end - start}ms`)
+    const end = Date.now()
+    console.log(`[Client: ${ip}] Write took ${end - start}ms`)
 
-		return c.json({id: id})
-	} catch	(e) {
-		console.log(e)
-		return c.json({error: "Internal server error"}, 500)
-	}
+    return c.json({id: id})
+  } catch	(e) {
+    console.log(e)
+    return c.json({error: "Internal server error"}, 500)
+  }
 }
 
 async function readRequest(c) {
