@@ -21,7 +21,7 @@ async function writeRequest(c) {
     const end = Date.now()
     console.log(`[Client: ${ip}] Write took ${end - start}ms`)
 
-    return c.json({id: id})
+    return c.json({id: id, colo: c.req.raw.cf?.colo || "???"})
   } catch	(e) {
     console.log(e)
     return c.json({error: "Internal server error"}, 500)
@@ -47,7 +47,15 @@ async function readRequest(c) {
   })
 }
 
+async function getColo(c) {
+  return c.json({
+    colo: c.req.raw.cf?.colo,
+    country: c.req.raw.cf?.country
+  })
+}
+
 app.post("/write", writeRequest)
 app.get("/read/:id", readRequest)
+app.get("/colo", getColo)
 
 export default app
