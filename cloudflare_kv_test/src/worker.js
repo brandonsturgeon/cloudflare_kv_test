@@ -11,6 +11,12 @@ async function writeRequest(c) {
 
   try {
     await Promise.all([
+      c.env.DataStore.put(`size:${id}`, data.byteLength, {
+        expirationTtl: 60,
+        metadata: {
+          remote: ip
+        }
+      }),
       c.env.DataStore.put(`data:${id}`, data, {
         type: "arrayBuffer",
         expirationTtl: 60,
@@ -18,10 +24,8 @@ async function writeRequest(c) {
           remote: ip
         }
       }),
-      c.env.BucketStore.put(`data:${id}`, data )
     ])
-    const end = Date.now()
-    console.log(`[Client: ${ip}] KV+Bucket Write took ${end - start}ms`)
+    console.log(`[Client: ${ip}] KV Writes took ${Date.now() - start}ms`)
 
     return c.json({id: id, colo: c.req.raw.cf?.colo || "???"})
   } catch	(e) {
@@ -34,19 +38,20 @@ async function readRequest(c) {
   const id = c.req.param("id")
   const ip = c.req.header("CF-Connecting-IP") || c.req.header("X-Forwarded-For")
 
-  let start = Date.now()
-  let data = await c.env.DataStore.get(`data:${id}`)
-  let end = Date.now()
-  console.log(`[Client: ${ip}] KV Read (ID: ${id}) took ${end - start}ms (null: ${data === null})`)
+  let sizeData = await c.env.DataStore.get(`size:${id}`)
+  if (sizeData === null) {
+    console.log(`[Client: ${ip}] KV Size read is NULL, waiting for 2s to try full data`)
+    await new Promise(r => setTimeout(r, 2000))
+  }
+  console.log(`[Client: ${ip}] KV Size read is: ${sizeData}`)
 
+  const data = await c.env.DataStore.get(`data:${id}`, {type: "arrayBuffer"})
   if (data === null) {
-    start = Date.now()
-    data = await c.env.BucketStore.get(`data:${id}`)
-    data = await data.arrayBuffer()
-    end = Date.now()
-    console.log(`[Client: ${ip}] Bucket Read (ID: ${id}) took ${end - start}ms`)
+    console.log(`[Client: ${ip}] KV Data read is NULL, returning 404 (Size data: ${sizeData})`)
     return c.notFound()
   }
+
+  console.log(`[Client: ${ip}] KV Data read is: ${data.byteLength}`)
 
   return c.body(data, 200, {
     "Content-Type": "application/octet-stream",

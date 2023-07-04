@@ -4,7 +4,7 @@ import generateData from "./generate.js";
 import setLocationData from "./colo.js";
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
-const dataSize = 1024 * 1024 * 10;
+const dataSize = 1024 * 1024 * 18;
 const url = "https://cloudflare_kv_test.brandonsturgeon.workers.dev";
 
 async function writeData() {
@@ -36,7 +36,7 @@ async function readData(proxy, id, agent, started, attempts) {
       readData(proxy, id, agent, started, attempts + 1);
     } else {
       const time = Date.now() - started;
-      console.log(`${loc} - 200 - (Took: ${time}ms | ${attempts} retries)`);
+      console.log(`${loc} - ${status} - (Took: ${time}ms | ${attempts} retries)`);
     }
   });
 }
